@@ -9,7 +9,7 @@
 
 #define WIDTH 70
 
-static int log_opt = 0;
+static int opt_log = 0;
 static int opt_debug = 0;
 static int opt_width = WIDTH;
 
@@ -96,6 +96,14 @@ static void footer(void)
 	}
 }
 
+static void reopen_stderr(const char *fname)
+{
+	if (*fname && freopen(fname, "w", stderr) != stderr) {
+		fprintf(stderr, "Error opening '%s': %s\n", fname, strerror(errno));
+		exit(1);
+	}
+}
+
 int main(int argc, const char **argv)
 {
 	int rc, i;
@@ -106,17 +114,16 @@ int main(int argc, const char **argv)
 	SetConsoleCP(1251);
 #endif
 	for (i = 1; i < argc; i++) {
-		if (!strcmp(argv[i], "-d"))
+		if (!strncmp(argv[i], "-l", 2)) {
+			opt_log = 1;
+			reopen_stderr(argv[i] + 2);
+		} else if (!strncmp(argv[i], "-d", 2)) {
 			opt_debug = 1;
-		else if (!strncmp(argv[i], "-w", 2))
+			reopen_stderr(argv[i] + 2);
+		} else if (!strncmp(argv[i], "-w", 2)) {
 			opt_width = atoi(argv[i] + 2);
-		else if (!strncmp(argv[i], "-i", 2)) {
+		} else if (!strncmp(argv[i], "-i", 2)) {
 			if (freopen(argv[i] + 2, "r", stdin) != stdin) {
-				fprintf(stderr, "Error opening '%s': %s\n", argv[i] + 2, strerror(errno));
-				exit(1);
-			}
-		} else if (!strncmp(argv[i], "-e", 2)) {
-			if (freopen(argv[i] + 2, "w", stderr) != stderr) {
 				fprintf(stderr, "Error opening '%s': %s\n", argv[i] + 2, strerror(errno));
 				exit(1);
 			}
@@ -126,7 +133,7 @@ int main(int argc, const char **argv)
 	}
 
 	if (!game) {
-		fprintf(stderr, "Usage: %s [-d] [-w<width>] <game>\n", argv[0]);
+		fprintf(stdout, "Usage: %s [-d] [-w<width>] <game>\n", argv[0]);
 		exit(1);
 	}
 
@@ -135,17 +142,17 @@ int main(int argc, const char **argv)
 		exit(1);
 	}
 
-	if (!opt_debug)
+	if (!opt_debug && !opt_log)
 		fclose(stderr);
 
 	instead_set_debug(opt_debug);
 
 	if (instead_init(game)) {
-		fprintf(stderr, "Can not init game: %s\n", game);
+		fprintf(stdout, "Can not init game: %s\n", game);
 		exit(1);
 	}
 	if (instead_load(NULL)) {
-		fprintf(stderr, "Can not load game: %s\n", instead_err());
+		fprintf(stdout, "Can not load game: %s\n", instead_err());
 		exit(1);
 	}
 #if 0 /* no autoload */
@@ -169,10 +176,6 @@ int main(int argc, const char **argv)
 		p[strcspn(p, "\n\r")] = 0;
 		if (!strcmp(p, "quit"))
 			break;
-		if (!strcmp(p, "log")) {
-			log_opt = 1;
-			continue;
-		}
 
 		if (!strncmp(p, "load ", 5) || !strncmp(p, "save ", 5)) {
 			rc = 1; str = NULL;
@@ -202,7 +205,7 @@ int main(int argc, const char **argv)
 		free(str);
 		if (!rc) /* no parser */
 			footer();
-		if (log_opt)
+		if (opt_log)
 			fprintf(stderr, "%s\n", p);
 	}
 	instead_cmd("save autosave", NULL);
