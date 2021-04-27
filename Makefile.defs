@@ -1,0 +1,11 @@
+VERSION := 3.3.4
+
+PREFIX=./
+DESTDIR=
+
+BIN=$(PREFIX)
+STEADPATH=$(PREFIX)stead
+
+INSTALLD=install -d -m 0755
+INSTALLB=install -m 0755
+INSTALL=install -m 0644

@@ -1,0 +1,20 @@
+include Makefile.common
+
+WINDOWS=yes
+
+LUA_CFLAGS=-I./windows/
+LUA_LFLAGS=-llua5.1 -L./windows/
+
+CFLAGS	+= -Wall -mconsole -D_HAVE_ICONV
+LDFLAGS += -liconv
+
+CC=i686-w64-mingw32-gcc
+
+RM=rm
+EXE=.exe
+
+INSTALLD=install -d -m 0755
+INSTALLB=install -m 0755
+INSTALL=install -m 0644
+
+PLATFORM=windows.c

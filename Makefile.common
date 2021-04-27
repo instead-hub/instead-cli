@@ -1,0 +1,39 @@
+include Makefile.defs
+
+CFLAGS += $(LUA_CFLAGS) $(EXTRA_CFLAGS) -DSTEAD_PATH=\"${STEADPATH}/\" -DVERSION=\"$(VERSION)\"
+
+LDFLAGS += $(LUA_LFLAGS) $(EXTRA_LDFLAGS)
+
+INSTEAD_SRC	:= instead.c util.c list.c cache.c idf.c tinymt32.c lfs.c
+
+SRC     := $(INSTEAD_SRC)
+OBJ     := $(patsubst %.c, %.o, $(SRC))
+
+all: instead-cli$(EXE)
+
+$(OBJ): %.o : instead/src/instead/%.c
+	$(CC) -c $(<) $(I) $(CFLAGS) $(CPPFLAGS) -o $(@)
+
+instead-cli$(EXE): main.c $(OBJ)
+	$(CC) $(CFLAGS) $(^) $(LDFLAGS) -o $(@)
+
+clean:
+	$(RM) -f *.o instead-cli$(EXE)
+
+install: all
+	$(INSTALLD) $(DESTDIR)/$(BIN)
+	$(INSTALLB) instead-cli$(EXE) $(DESTDIR)/$(BIN)/instead-cli$(EXE)
+	$(INSTALLD) $(DESTDIR)/$(STEADPATH)
+	for d in stead2 stead3 stead3/ext; do \
+		$(INSTALLD) $(DESTDIR)/$(STEADPATH)/$$d; \
+		$(INSTALL) instead/stead/$$d/*.lua $(DESTDIR)/$(STEADPATH)/$$d/; \
+	done
+
+	for d in morph parser; do \
+		$(INSTALLD) $(DESTDIR)/$(STEADPATH)/stead3/$$d; \
+		$(INSTALL) metaparser/$$d/* $(DESTDIR)/$(STEADPATH)/stead3/$$d/; \
+	done
+
+	$(INSTALL) instead/src/tiny/tiny2.lua $(DESTDIR)/$(STEADPATH)/stead2/
+	$(INSTALL) instead/src/tiny/tiny3.lua $(DESTDIR)/$(STEADPATH)/stead3/
+	$(INSTALL) instead/src/tiny/tiny.lua $(DESTDIR)/$(STEADPATH)/
