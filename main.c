@@ -110,6 +110,8 @@ int main(int argc, const char **argv)
 			opt_debug = 1;
 		else if (!strncmp(argv[i], "-w", 2))
 			opt_width = atoi(argv[i] + 2);
+		else if (!strncmp(argv[i], "-i", 2))
+			freopen(argv[i] + 2, "r", stdin);
 		else if (!game)
 			game = argv[i];
 	}
