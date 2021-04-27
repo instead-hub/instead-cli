@@ -36,4 +36,4 @@ install: all
 
 	$(INSTALL) instead/src/tiny/tiny2.lua $(DESTDIR)/$(STEADPATH)/stead2/
 	$(INSTALL) instead/src/tiny/tiny3.lua $(DESTDIR)/$(STEADPATH)/stead3/
-	$(INSTALL) instead/src/tiny/tiny.lua $(DESTDIR)/$(STEADPATH)/
+	$(INSTALL) tiny.lua $(DESTDIR)/$(STEADPATH)/
