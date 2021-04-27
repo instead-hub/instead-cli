@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -100,7 +101,6 @@ int main(int argc, const char **argv)
 	int rc, i;
 	char *str;
 	const char *game = NULL;
-
 #ifdef _WIN32
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
@@ -110,10 +110,19 @@ int main(int argc, const char **argv)
 			opt_debug = 1;
 		else if (!strncmp(argv[i], "-w", 2))
 			opt_width = atoi(argv[i] + 2);
-		else if (!strncmp(argv[i], "-i", 2))
-			freopen(argv[i] + 2, "r", stdin);
-		else if (!game)
+		else if (!strncmp(argv[i], "-i", 2)) {
+			if (freopen(argv[i] + 2, "r", stdin) != stdin) {
+				fprintf(stderr, "Error opening '%s': %s\n", argv[i] + 2, strerror(errno));
+				exit(1);
+			}
+		} else if (!strncmp(argv[i], "-e", 2)) {
+			if (freopen(argv[i] + 2, "w", stderr) != stderr) {
+				fprintf(stderr, "Error opening '%s': %s\n", argv[i] + 2, strerror(errno));
+				exit(1);
+			}
+		} else if (!game) {
 			game = argv[i];
+		}
 	}
 
 	if (!game) {
@@ -125,6 +134,9 @@ int main(int argc, const char **argv)
 		fprintf(stderr, "Can't register tiny extension\n");
 		exit(1);
 	}
+
+	if (!opt_debug)
+		fclose(stderr);
 
 	instead_set_debug(opt_debug);
 
