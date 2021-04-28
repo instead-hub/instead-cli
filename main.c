@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <unistd.h>
+#include <locale.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -12,10 +14,39 @@
 static int opt_log = 0;
 static int opt_debug = 0;
 static int opt_width = WIDTH;
+static char *opt_autoload = NULL;
+
+static int need_restart = 0;
+static int need_load = 0;
+static int need_save = 0;
+static int parser_mode = 0;
+
+static int luaB_menu(lua_State *L)
+{
+	const char *menu = luaL_optstring(L, 1, NULL);
+	if (!menu)
+		return 0;
+	need_save = !strcmp(menu, "save");
+	need_load = !strcmp(menu, "load");
+	return 0;
+}
+
+static int luaB_restart(lua_State *L)
+{
+	need_restart = !lua_isboolean(L, 1) || lua_toboolean(L, 1);
+	return 0;
+}
+
+static const luaL_Reg tiny_funcs[] = {
+	{ "instead_restart", luaB_restart },
+	{ "instead_menu", luaB_menu },
+	{ NULL, NULL }
+};
 
 static int tiny_init(void)
 {
 	int rc;
+	instead_api_register(tiny_funcs);
 	rc = instead_loadfile(STEAD_PATH"tiny.lua");
 	if (rc)
 		return rc;
@@ -77,7 +108,8 @@ static void fmt(const char *str, int width)
 static char *trim(char *str)
 {
 	char *eptr = str + strlen(str);
-	while ((*eptr == '\n' || *eptr == 0) && eptr != str) *eptr-- = 0;
+	while ((*eptr == '\n' || *eptr == 0 || *eptr == ' ') && eptr != str) *eptr-- = 0;
+	str += strspn(str, " \t\n\r");
 	return str;
 }
 
@@ -104,11 +136,24 @@ static void reopen_stderr(const char *fname)
 	}
 }
 
+static char *get_input(void)
+{
+	static char input[256], *p;
+	input[0] = 0;
+	p = fgets(input, sizeof(input), stdin);
+	if (p && *p) {
+		p[strcspn(p, "\n\r")] = 0;
+	}
+	return p;
+}
+
 int main(int argc, const char **argv)
 {
 	int rc, i;
 	char *str;
 	const char *game = NULL;
+	char cmd[256 + 64];
+	setlocale(LC_ALL, "");
 #ifdef _WIN32
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
@@ -146,7 +191,7 @@ int main(int argc, const char **argv)
 		fclose(stderr);
 
 	instead_set_debug(opt_debug);
-
+restart:
 	if (instead_init(game)) {
 		fprintf(stdout, "Can not init game: %s\n", game);
 		exit(1);
@@ -155,29 +200,32 @@ int main(int argc, const char **argv)
 		fprintf(stdout, "Can not load game: %s\n", instead_err());
 		exit(1);
 	}
-#if 0 /* no autoload */
-	str = instead_cmd("load autosave", &rc);
-#else
-	str = instead_cmd("look", &rc);
-#endif
-	if (!rc) {
-		trim(str);
-		fmt(str, opt_width);
+	if (opt_autoload) {
+		snprintf(cmd, sizeof(cmd), "load %s", opt_autoload);
+		printf("%s\n", cmd);
+		str = instead_cmd(cmd, &rc);
+	} else
+		str = instead_cmd("look", &rc);
+	if (!rc && str) {
+		fmt(trim(str), opt_width);
 		fflush(stdout);
 	}
 	free(str);
-
+	if (opt_autoload) {
+		free(opt_autoload);
+		opt_autoload = NULL;
+	}
+	need_restart = need_load = need_save = 0;
 	while (1) {
-		char input[256], *p, cmd[256 + 64];
+		char *p;
 		printf("> "); fflush(stdout);
-		p = fgets(input, sizeof(input), stdin);
+		p = get_input();
 		if (!p)
 			break;
-		p[strcspn(p, "\n\r")] = 0;
-		if (!strcmp(p, "quit"))
+		if (!strcmp(p, "/quit"))
 			break;
 
-		if (!strncmp(p, "load ", 5) || !strncmp(p, "save ", 5)) {
+		if (!strncmp(p, "/load ", 6) || !strncmp(p, "/save ", 6)) {
 			rc = 1; str = NULL;
 		} else {
 			snprintf(cmd, sizeof(cmd), "use %s", p); /* try use */
@@ -194,19 +242,53 @@ int main(int argc, const char **argv)
 			str = instead_cmd(cmd, &rc);
 		}
 		if (rc && !str) { /* parser? */
+			parser_mode = 1;
 			snprintf(cmd, sizeof(cmd), "@metaparser \"%s\"", p);
 			str = instead_cmd(cmd, NULL);
 		}
 		if (str) {
-			trim(str);
-			fmt(str, opt_width);
+			fmt(trim(str), opt_width);
 			fflush(stdout);
 		}
 		free(str);
-		if (!rc) /* no parser */
+		if (!rc && !parser_mode) /* no parser */
 			footer();
 		if (opt_log)
 			fprintf(stderr, "%s\n", p);
+		if (need_restart) {
+			instead_done();
+			goto restart;
+		}
+		if (need_save) {
+			puts("?(autosave)"); fflush(stdout);
+			p = get_input();
+			if (p && *p)
+				snprintf(cmd, sizeof(cmd), "save %s", p);
+			else
+				snprintf(cmd, sizeof(cmd), "save autosave");
+			printf("%s\n", cmd);
+			str = instead_cmd(cmd, NULL);
+			if (str)
+				free(str);
+			need_save = 0;
+		} else if (need_load) {
+			puts("?(autosave)"); fflush(stdout);
+			p = get_input();
+			if (opt_autoload)
+				free(opt_autoload);
+			if (p && *p)
+				opt_autoload = strdup(p);
+			else
+				opt_autoload = strdup("autosave");
+			if (!access(opt_autoload, R_OK)) {
+				instead_done();
+				goto restart;
+			} else {
+				need_load = 0;
+				printf("No file\n");
+				free(opt_autoload); opt_autoload = NULL;
+			}
+		}
 	}
 	instead_cmd("save autosave", NULL);
 	instead_done();

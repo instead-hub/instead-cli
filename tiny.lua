@@ -6,7 +6,9 @@
 
 if API == 'stead3' then
 	require 'tiny3'
-	return
+	local instead = std '@instead'
+	instead.restart = instead_restart
+	instead.menu = instead_menu
+else
+	require 'tiny2'
 end
-
-require 'tiny2'
