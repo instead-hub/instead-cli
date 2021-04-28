@@ -20,6 +20,7 @@ static int need_restart = 0;
 static int need_load = 0;
 static int need_save = 0;
 static int parser_mode = 0;
+static int menu_mode = 0;
 
 static int luaB_menu(lua_State *L)
 {
@@ -118,12 +119,12 @@ static void footer(void)
 	char *p;
 	p = instead_cmd("way", NULL);
 	if (p && *p) {
-		puts(">> "); fmt(trim(p), opt_width);
+		printf(">> "); fmt(trim(p), opt_width);
 		free(p);
 	}
 	p = instead_cmd("inv", NULL);
 	if (p && *p) {
-		puts("** "); fmt(trim(p), opt_width);
+		printf("** "); fmt(trim(p), opt_width);
 		free(p);
 	}
 }
@@ -138,7 +139,8 @@ static void reopen_stderr(const char *fname)
 
 static char *get_input(void)
 {
-	static char input[256], *p;
+	static char input[256];
+	char *p;
 	input[0] = 0;
 	p = fgets(input, sizeof(input), stdin);
 	if (p && *p) {
@@ -178,7 +180,7 @@ int main(int argc, const char **argv)
 	}
 
 	if (!game) {
-		fprintf(stdout, "Usage: %s [-d] [-w<width>] <game>\n", argv[0]);
+		fprintf(stdout, "Usage: %s [-d<file>] [-w<width>] [-i<script>] [-l<log>] <game>\n", argv[0]);
 		exit(1);
 	}
 
@@ -196,6 +198,9 @@ restart:
 		fprintf(stdout, "Can not init game: %s\n", game);
 		exit(1);
 	}
+#ifdef _WIN32
+	instead_set_encoding("CP1251");
+#endif
 	if (instead_load(NULL)) {
 		fprintf(stdout, "Can not load game: %s\n", instead_err());
 		exit(1);
@@ -225,9 +230,13 @@ restart:
 		if (!strcmp(p, "/quit"))
 			break;
 
-		if (!strncmp(p, "/load ", 6) || !strncmp(p, "/save ", 6)) {
-			rc = 1; str = NULL;
-		} else {
+		rc = 1; str = NULL;
+
+		if (*p == '/') {
+			p++;
+			snprintf(cmd, sizeof(cmd), "%s", p);
+			str = instead_cmd(cmd, &rc);
+		} else if (!parser_mode) {
 			snprintf(cmd, sizeof(cmd), "use %s", p); /* try use */
 			str = instead_cmd(cmd, &rc);
 			if (rc) { /* try go */
@@ -235,23 +244,25 @@ restart:
 				snprintf(cmd, sizeof(cmd), "go %s", p);
 				str = instead_cmd(cmd, &rc);
 			}
+			if (!rc)
+				menu_mode = 1;
+		}
+		if (rc && !str && !menu_mode) { /* parser? */
+			parser_mode = 1;
+			snprintf(cmd, sizeof(cmd), "@metaparser \"%s\"", p);
+			str = instead_cmd(cmd, &rc);
 		}
 		if (rc) { /* try act */
 			free(str);
-			snprintf(cmd, sizeof(cmd), "%s", p);
+			snprintf(cmd, sizeof(cmd), "act %s", p);
 			str = instead_cmd(cmd, &rc);
-		}
-		if (rc && !str) { /* parser? */
-			parser_mode = 1;
-			snprintf(cmd, sizeof(cmd), "@metaparser \"%s\"", p);
-			str = instead_cmd(cmd, NULL);
 		}
 		if (str) {
 			fmt(trim(str), opt_width);
 			fflush(stdout);
+			free(str);
 		}
-		free(str);
-		if (!rc && !parser_mode) /* no parser */
+		if (!parser_mode)
 			footer();
 		if (opt_log)
 			fprintf(stderr, "%s\n", p);
