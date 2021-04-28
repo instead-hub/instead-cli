@@ -93,18 +93,34 @@ static void fmt(const char *str, int width)
 		if (c == ' ' || c == '\t' || c == '\n')
 			last = ptr;
 		if ((width > 0 && w > width && last) || c == '\n') {
-			while(s != last)
+			while(s != last) {
+			#ifdef _WIN32
+				int n = utf_ff(s, last);
+				fwrite(s, n, 1, stdout);
+				s += n;
+			#else
 				putc(*s++, stdout);
+			#endif
+			}
 			if (c != '\n')
 				putc('\n', stdout);
+			fflush(stdout);
 			w = 0;
 			last = s;
 			continue;
 		}
 	}
-	while(s != eptr)
+	while(s != eptr) {
+	#ifdef _WIN32
+		int n = utf_ff(s, eptr);
+		fwrite(s, n, 1, stdout);
+		s += n;
+	#else
 		putc(*s++, stdout);
+	#endif
+	}
 	putc('\n', stdout);
+	fflush(stdout);
 }
 
 static char *trim(char *str)
@@ -226,7 +242,6 @@ restart:
 		str = instead_cmd("look", &rc);
 	if (!rc && str) {
 		fmt(trim(str), opt_width);
-		fflush(stdout);
 	}
 	free(str);
 	if (opt_autoload) {
@@ -275,7 +290,6 @@ restart:
 		}
 		if (str) {
 			fmt(trim(str), opt_width);
-			fflush(stdout);
 			free(str);
 		}
 		if (!parser_mode && !cmd_mode)
