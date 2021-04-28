@@ -306,7 +306,7 @@ restart:
 			}
 		}
 	}
-	instead_cmd("save autosave", NULL);
+	free(instead_cmd("save autosave", NULL));
 	instead_done();
 	exit(0);
 }
