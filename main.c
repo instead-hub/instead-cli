@@ -19,8 +19,6 @@ static char *opt_autoload = NULL;
 static int need_restart = 0;
 static int need_load = 0;
 static int need_save = 0;
-static int parser_mode = 0;
-static int menu_mode = 0;
 
 static int luaB_menu(lua_State *L)
 {
@@ -155,6 +153,10 @@ int main(int argc, const char **argv)
 	char *str;
 	const char *game = NULL;
 	char cmd[256 + 64];
+
+	int parser_mode = 0;
+	int menu_mode = 0;
+
 	setlocale(LC_ALL, "");
 #ifdef _WIN32
 	SetConsoleOutputCP(1251);
@@ -223,6 +225,7 @@ restart:
 	need_restart = need_load = need_save = 0;
 	while (1) {
 		char *p;
+		int cmd_mode = 0;
 		printf("> "); fflush(stdout);
 		p = get_input();
 		if (!p)
@@ -234,8 +237,10 @@ restart:
 
 		if (*p == '/') {
 			p++;
+			cmd_mode = 1;
 			snprintf(cmd, sizeof(cmd), "%s", p);
 			str = instead_cmd(cmd, &rc);
+			rc = 0; /* force success */
 		} else if (!parser_mode) {
 			snprintf(cmd, sizeof(cmd), "use %s", p); /* try use */
 			str = instead_cmd(cmd, &rc);
@@ -262,7 +267,7 @@ restart:
 			fflush(stdout);
 			free(str);
 		}
-		if (!parser_mode)
+		if (!parser_mode && !cmd_mode)
 			footer();
 		if (opt_log)
 			fprintf(stderr, "%s\n", p);
