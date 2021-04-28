@@ -20,6 +20,9 @@ static int need_restart = 0;
 static int need_load = 0;
 static int need_save = 0;
 
+#ifdef _WIN32
+static int opt_codepage = 1251;
+#endif
 static int luaB_menu(lua_State *L)
 {
 	const char *menu = luaL_optstring(L, 1, NULL);
@@ -158,14 +161,14 @@ int main(int argc, const char **argv)
 	int menu_mode = 0;
 
 	setlocale(LC_ALL, "");
-#ifdef _WIN32
-	SetConsoleOutputCP(1251);
-	SetConsoleCP(1251);
-#endif
 	for (i = 1; i < argc; i++) {
 		if (!strncmp(argv[i], "-l", 2)) {
 			opt_log = 1;
 			reopen_stderr(argv[i] + 2);
+#ifdef _WIN32
+		} else if (!strncmp(argv[i], "-cp", 3)) {
+			opt_codepage = atoi(argv[i] + 3);
+#endif
 		} else if (!strncmp(argv[i], "-d", 2)) {
 			opt_debug = 1;
 			reopen_stderr(argv[i] + 2);
@@ -180,7 +183,10 @@ int main(int argc, const char **argv)
 			game = argv[i];
 		}
 	}
-
+#ifdef _WIN32
+	SetConsoleOutputCP(opt_codepage);
+	SetConsoleCP(opt_codepage);
+#endif
 	if (!game) {
 		fprintf(stdout, "Usage: %s [-d<file>] [-w<width>] [-i<script>] [-l<log>] <game>\n", argv[0]);
 		exit(1);
@@ -201,7 +207,12 @@ restart:
 		exit(1);
 	}
 #ifdef _WIN32
-	instead_set_encoding("CP1251");
+	if (opt_codepage == 65001)
+		instead_set_encoding("UTF-8");
+	else {
+		snprintf(cmd, sizeof(cmd), "CP%d", opt_codepage);
+		instead_set_encoding(cmd);
+	}
 #endif
 	if (instead_load(NULL)) {
 		fprintf(stdout, "Can not load game: %s\n", instead_err());
