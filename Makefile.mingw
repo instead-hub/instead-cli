@@ -1,7 +1,5 @@
 include Makefile.common
 
-WINDOWS=yes
-
 LUA_CFLAGS=-I./windows/
 LUA_LFLAGS=-llua5.1 -L./windows/
 

@@ -1,3 +1,27 @@
+/*
+ * Copyright 2009-2021 Peter Kosyh <p.kosyh at gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation files
+ * (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,6 +39,7 @@ static int opt_log = 0;
 static int opt_debug = 0;
 static int opt_width = WIDTH;
 static char *opt_autoload = NULL;
+static int opt_autosave = 1;
 
 static int need_restart = 0;
 static int need_load = 0;
@@ -170,6 +195,7 @@ int main(int argc, const char **argv)
 {
 	int rc, i;
 	char *str;
+	FILE *log_file = NULL;
 	const char *game = NULL;
 	char cmd[256 + 64];
 
@@ -180,11 +206,14 @@ int main(int argc, const char **argv)
 	for (i = 1; i < argc; i++) {
 		if (!strncmp(argv[i], "-l", 2)) {
 			opt_log = 1;
-			reopen_stderr(argv[i] + 2);
+			log_file = fopen(argv[i] + 2, "wb");
 #ifdef _WIN32
 		} else if (!strncmp(argv[i], "-cp", 3)) {
 			opt_codepage = atoi(argv[i] + 3);
 #endif
+		} else if (!strcmp(argv[i], "-a")) {
+			opt_autoload = strdup("autosave");
+			opt_autosave = 1;
 		} else if (!strncmp(argv[i], "-d", 2)) {
 			opt_debug = 1;
 			reopen_stderr(argv[i] + 2);
@@ -204,6 +233,7 @@ int main(int argc, const char **argv)
 	SetConsoleCP(opt_codepage);
 #endif
 	if (!game) {
+		printf("instead-cli %s (by Peter Kosyh '2021)\n", VERSION);
 		fprintf(stdout, "Usage: %s [-d<file>] [-w<width>] [-i<script>] [-l<log>] <game>\n", argv[0]);
 		exit(1);
 	}
@@ -294,8 +324,12 @@ restart:
 		}
 		if (!parser_mode && !cmd_mode)
 			footer();
-		if (opt_log)
-			fprintf(stderr, "%s\n", p);
+		if (opt_log) {
+			if (log_file)
+				fprintf(log_file, "%s\n", p);
+			else
+				fprintf(stderr, "%s\n", p);
+		}
 		if (need_restart) {
 			instead_done();
 			goto restart;
@@ -331,7 +365,10 @@ restart:
 			}
 		}
 	}
-	free(instead_cmd("save autosave", NULL));
+	if (opt_autosave)
+		free(instead_cmd("save autosave", NULL));
 	instead_done();
+	if (log_file)
+		fclose(log_file);
 	exit(0);
 }
