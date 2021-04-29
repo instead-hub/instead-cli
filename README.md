@@ -1,12 +1,16 @@
 # instead-cli
 
+Trivial INSTEAD interpreter for developers.
+
 ## Build and run
+
+Dependencies: luajit (or lua), iconv.
 
 ```
 $ git clone https://github.com/instead-hub/instead-cli.git
 $ git submodule init
 $ git submodule update
-# edit Makefile.defs if needed
+# edit Makefile if needed
 $ make install
 $ cd release
 $ ./instead-cli
@@ -14,7 +18,7 @@ $ ./instead-cli
 
 System wide setup:
 
-Edit Makefile.defs
+Edit Makefile.defs.
 
 ```
 DESTDIR=/
