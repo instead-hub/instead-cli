@@ -47,4 +47,10 @@ Options:
 * -wnum - line width is num symbols (70 by default);
 * -iscript - read script line by line and use it as commands;
 * -lfile - write all input commands to file;
-* -a - autosave on exit and autoload on start (autosave file)
+* -a - autosave on exit and autoload on start (autosave file).
+
+## Links
+
+* https://instead.hugeping.ru
+* https://parser.hugeping.ru
+* http://instead-games.ru
