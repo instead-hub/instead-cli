@@ -234,7 +234,7 @@ int main(int argc, const char **argv)
 #endif
 	if (!game) {
 		printf("instead-cli %s (by Peter Kosyh '2021)\n", VERSION);
-		fprintf(stdout, "Usage: %s [-d<file>] [-w<width>] [-i<script>] [-l<log>] <game>\n", argv[0]);
+		fprintf(stdout, "Usage: %s [-d<file>] [-w<width>] [-i<script>] [-l<log>] [-a] <game>\n", argv[0]);
 		exit(1);
 	}
 
