@@ -96,7 +96,7 @@ static void fmt(const char *str, int width)
 			while(s != last) {
 			#ifdef _WIN32
 				int n = utf_ff(s, last);
-				fwrite(s, n, 1, stdout);
+				write(1, s, n);
 				s += n;
 			#else
 				putc(*s++, stdout);
@@ -113,7 +113,7 @@ static void fmt(const char *str, int width)
 	while(s != eptr) {
 	#ifdef _WIN32
 		int n = utf_ff(s, eptr);
-		fwrite(s, n, 1, stdout);
+		write(1, s, n);
 		s += n;
 	#else
 		putc(*s++, stdout);
