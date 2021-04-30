@@ -8,6 +8,7 @@ Dependencies: luajit (or lua), iconv.
 
 ```
 $ git clone https://github.com/instead-hub/instead-cli.git
+$ cd instead-cli
 $ git submodule init
 $ git submodule update
 # edit Makefile if needed
