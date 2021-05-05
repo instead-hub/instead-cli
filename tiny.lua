@@ -9,6 +9,13 @@ if API == 'stead3' then
 	local instead = std '@instead'
 	instead.restart = instead_restart
 	instead.menu = instead_menu
+
+	std.mod_start(function()
+		local mp = std.ref '@metaparser'
+		if mp then
+			mp.msg.CUTSCENE_MORE = '^'..mp.msg.CUTSCENE_HELP
+		end
+	end)
 else
 	require 'tiny2'
 end
