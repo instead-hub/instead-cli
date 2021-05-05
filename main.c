@@ -297,6 +297,8 @@ restart:
 			cmd_mode = 1;
 			snprintf(cmd, sizeof(cmd), "%s", p);
 			str = instead_cmd(cmd, &rc);
+			if (rc)
+				printf("Error!\n");
 			rc = 0; /* force success */
 		} else if (!parser_mode) {
 			snprintf(cmd, sizeof(cmd), "use %s", p); /* try use */
@@ -365,6 +367,10 @@ restart:
 				printf("No file\n");
 				free(opt_autoload); opt_autoload = NULL;
 			}
+		}
+		if (instead_err()) {
+			printf("Error: %s\n", instead_err());
+			instead_err_msg(NULL);
 		}
 	}
 	if (opt_autosave)
