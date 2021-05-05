@@ -244,7 +244,7 @@ int main(int argc, const char **argv)
 		exit(1);
 	}
 
-	if (!opt_debug && !opt_log)
+	if (!opt_debug)
 		fclose(stderr);
 
 	instead_set_debug(opt_debug);
