@@ -250,7 +250,7 @@ int main(int argc, const char **argv)
 	instead_set_debug(opt_debug);
 restart:
 	if (instead_init(game)) {
-		fprintf(stdout, "Can not init game: %s\n", game);
+		fprintf(stdout, "Can not init game: %s (%s)\n", game, instead_err());
 		exit(1);
 	}
 #ifdef _WIN32
