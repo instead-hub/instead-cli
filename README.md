@@ -36,7 +36,7 @@ $ make && sudo make install
 ### 9front (Plan9) build
 
 ```
-% git/clone https://github.com/instead-hub/instead-cli
+% git/clone https://github.com/instead-hub/instead-cli.git
 % mk init
 % mk
 % mk install
