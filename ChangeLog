@@ -2,7 +2,7 @@
   * metaparser better compatibility;
   * show errors to stdout;
   * windows static build;
-  * 9front build.
+  * 9front (Plan9) build.
 
 1.0
   * Initial release
