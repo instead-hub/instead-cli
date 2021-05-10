@@ -34,7 +34,7 @@ OFILES=\
 %.$O: %.c
 	$CC $CFLAGS -c -o $target $stem.c
 
-$O.instead: $OFILES
+$O.instead: $OFILES $LIBS
 	$CC $CFLAGS -o $target $OFILES $LIBS
 
 install:V:
