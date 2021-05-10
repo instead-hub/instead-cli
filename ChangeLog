@@ -1,0 +1,7 @@
+1.1
+  * metaparser better compatibility;
+  * show errors to stdout;
+  * windows static build.
+
+1.0
+  * Initial release
