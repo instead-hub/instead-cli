@@ -33,6 +33,15 @@ Then:
 $ make && sudo make install
 ```
 
+### 9front (Plan9) build
+
+```
+% git/clone https://github.com/instead-hub/instead-cli
+% mk init
+% mk
+% mk install
+```
+
 ## Run
 
 ./instead-cli <gamedir path>

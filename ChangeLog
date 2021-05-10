@@ -1,7 +1,8 @@
 1.1
   * metaparser better compatibility;
   * show errors to stdout;
-  * windows static build.
+  * windows static build;
+  * 9front build.
 
 1.0
   * Initial release
