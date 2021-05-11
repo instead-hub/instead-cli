@@ -202,6 +202,14 @@ static char *get_input(void)
 	return p;
 }
 
+static void show_err(void)
+{
+	if (instead_err()) {
+		printf("Error: %s\n", instead_err());
+		instead_err_msg(NULL);
+	}
+}
+
 int main(int argc, const char **argv)
 {
 	int rc, i;
@@ -278,6 +286,7 @@ restart:
 		str = instead_cmd(cmd, &rc);
 	} else
 		str = instead_cmd("look", &rc);
+	show_err();
 	if (!rc && str) {
 		fmt(trim(str), opt_width);
 	}
@@ -375,10 +384,7 @@ restart:
 				free(opt_autoload); opt_autoload = NULL;
 			}
 		}
-		if (instead_err()) {
-			printf("Error: %s\n", instead_err());
-			instead_err_msg(NULL);
-		}
+		show_err();
 	}
 	if (opt_autosave)
 		free(instead_cmd("save autosave", NULL));
