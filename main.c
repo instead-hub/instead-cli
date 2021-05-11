@@ -180,6 +180,16 @@ static void reopen_stderr(const char *fname)
 	}
 }
 
+static void reopen_stdin(const char *fname)
+{
+	if (!fname || !*fname)
+		fname = "autoscript";
+	if (freopen(fname, "r", stdin) != stdin) {
+		fprintf(stderr, "Error opening '%s': %s\n", fname, strerror(errno));
+		exit(1);
+	}
+}
+
 static char *get_input(void)
 {
 	static char input[256];
@@ -221,10 +231,7 @@ int main(int argc, const char **argv)
 		} else if (!strncmp(argv[i], "-w", 2)) {
 			opt_width = atoi(argv[i] + 2);
 		} else if (!strncmp(argv[i], "-i", 2)) {
-			if (freopen(argv[i] + 2, "r", stdin) != stdin) {
-				fprintf(stderr, "Error opening '%s': %s\n", argv[i] + 2, strerror(errno));
-				exit(1);
-			}
+			reopen_stdin(argv[i] + 2);
 		} else if (!game) {
 			game = argv[i];
 		}
