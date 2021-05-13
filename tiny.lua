@@ -16,6 +16,11 @@ if API == 'stead3' then
 			return '/'..str..'/'
 		end
 	end
+	function iface:bold(str)
+		if type(str) == 'string' then
+			return '*'..str..'*'
+		end
+	end
 	std.mod_start(function()
 		std.mod_init(function()
 			std.rawset(_G, 'instead', instead)
