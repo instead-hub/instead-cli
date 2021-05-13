@@ -62,7 +62,8 @@ Options:
 * -iscript - read script line by line and use it as commands;
 * -lfile - write all input commands to file;
 * -cpCODEPAGE - Win only (1251 by default), use 65001 for UTF-8;
-* -a - autosave on exit and autoload on start (autosave file).
+* -a - autosave on exit and autoload on start (autosave file);
+* -x - execute lua script.
 
 ## Links
 
