@@ -7,9 +7,15 @@
 if API == 'stead3' then
 	require 'tiny3'
 	local instead = std '@instead'
+	local iface = std '@iface'
 	instead.restart = instead_restart
 	instead.menu = instead_menu
 	instead.savepath = function() return "./" end
+	function iface:em(str)
+		if type(str) == 'string' then
+			return '/'..str..'/'
+		end
+	end
 	std.mod_start(function()
 		std.mod_init(function()
 			std.rawset(_G, 'instead', instead)
