@@ -32,10 +32,11 @@
 #include <windows.h>
 #endif
 #include "instead/src/instead/instead.h"
-
+#include "instead/src/instead/util.h"
 #define WIDTH 70
 
 static int opt_log = 0;
+static int opt_lua = 0;
 static int opt_debug = 0;
 static int opt_width = WIDTH;
 static char *opt_autoload = NULL;
@@ -220,6 +221,7 @@ int main(int argc, const char **argv)
 
 	int parser_mode = 0;
 	int menu_mode = 0;
+	int opt_args = 0;
 
 	setlocale(LC_ALL, "");
 	for (i = 1; i < argc; i++) {
@@ -233,6 +235,8 @@ int main(int argc, const char **argv)
 		} else if (!strcmp(argv[i], "-a")) {
 			opt_autoload = strdup("autosave");
 			opt_autosave = 1;
+		} else if (!strcmp(argv[i], "-x")) {
+			opt_lua = 1;
 		} else if (!strncmp(argv[i], "-d", 2)) {
 			opt_debug = 1;
 			reopen_stderr(argv[i] + 2);
@@ -242,6 +246,7 @@ int main(int argc, const char **argv)
 			reopen_stdin(argv[i] + 2);
 		} else if (!game) {
 			game = argv[i];
+			opt_args = i + 1;
 		}
 	}
 #ifdef _WIN32
@@ -263,6 +268,18 @@ int main(int argc, const char **argv)
 		fclose(stderr);
 
 	instead_set_debug(opt_debug);
+
+	if (opt_lua) {
+		rc = instead_init_lua(dirpath(game), 0);
+		show_err();
+		if (rc)
+			exit(1);
+		rc = instead_loadscript((char*)game, argc - opt_args, (char **)argv + opt_args, 1);
+		show_err();
+		instead_done();
+		exit(!!rc);
+	}
+
 restart:
 	if (instead_init(game)) {
 		fprintf(stdout, "Can not init game: %s (%s)\n", game, instead_err());
