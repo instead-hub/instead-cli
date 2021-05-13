@@ -1,3 +1,9 @@
+1.2
+  * -x option;
+  * *bold* and /italic/;
+  * sandbox enabled for stead3;
+  * -i with default autoscript.
+
 1.1
   * metaparser better compatibility;
   * show errors to stdout;
