@@ -13,6 +13,9 @@ all: instead-cli$(EXE)
 
 $(OBJ): %.o : instead/src/instead/%.c
 	$(CC) -c $(<) $(I) $(CFLAGS) $(CPPFLAGS) -o $(@)
+update:
+	cd instead && git checkout master && git pull
+	cd metaparser && git checkout master && git pull
 
 instead-cli$(EXE): main.c $(OBJ)
 	$(CC) $(CFLAGS) $(^) $(LDFLAGS) -o $(@)
