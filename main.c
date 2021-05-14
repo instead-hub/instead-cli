@@ -242,7 +242,7 @@ static void mmedia_run(const char *f)
 	static char cmd[512];
 	if (!mmedia_bin || !mmedia_bin[0])
 		return;
-	snprintf(cmd, sizeof(cmd), "%s %s", mmedia_bin, f);
+	snprintf(cmd, sizeof(cmd), "%s \"%s\"", mmedia_bin, f);
 	/* not safe! but it is windows... */
 	system(cmd);
 #endif

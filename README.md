@@ -65,7 +65,7 @@ Options:
 * -a - autosave on exit and autoload on start (autosave file);
 * -x - execute lua script;
 * -m - enable multimedia output;
-* -mcmd - enable run cmd on multimedia (for ex. -m/usr/bin/xdg-open).
+* -mcmd - enable run cmd on multimedia. Examples: -m/usr/bin/xdg-open (Linux), -m/bin/plumb (Plan9), -m"start\"\"" (Windows).
 
 ## Links
 
