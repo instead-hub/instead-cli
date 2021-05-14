@@ -211,6 +211,31 @@ static void show_err(void)
 	}
 }
 
+static char *media[] = { NULL, NULL };
+static char *media_fn[] = {
+	"instead.get_picture",
+	"instead.get_music"
+};
+
+static void mmedia(int t)
+{
+	char *mm;
+	instead_lock();
+	instead_function(media_fn[t], NULL);
+	mm = instead_retval(0);
+        instead_clear();
+        instead_unlock();
+	if (!mm && !media[t])
+		return;
+	if ((!media[t] && mm) || (media[t] && !mm) ||
+	    strcmp(media[t], mm)) {
+		free(media[t]);
+		media[t] = mm;
+		if (mm && *mm) { /* changed */
+			printf("@ %s\n", mm);
+		}
+	}
+}
 int main(int argc, const char **argv)
 {
 	int rc, i;
@@ -297,6 +322,7 @@ restart:
 		fprintf(stdout, "Can not load game: %s\n", instead_err());
 		exit(1);
 	}
+	mmedia(0); mmedia(1);
 	if (opt_autoload) {
 		snprintf(cmd, sizeof(cmd), "load %s", opt_autoload);
 		printf("%s\n", cmd);
@@ -322,7 +348,6 @@ restart:
 			break;
 		if (!strcmp(p, "/quit"))
 			break;
-
 		rc = 1; str = NULL;
 
 		if (*p == '/') {
@@ -356,6 +381,7 @@ restart:
 			str = instead_cmd(cmd, &rc);
 		}
 		if (str) {
+			mmedia(0); mmedia(1);
 			fmt(trim(str), opt_width);
 			free(str);
 		}

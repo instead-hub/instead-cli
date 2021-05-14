@@ -24,7 +24,7 @@ install: all
 	$(INSTALLD) $(DESTDIR)/$(BIN)
 	$(INSTALLB) instead-cli$(EXE) $(DESTDIR)/$(BIN)/instead-cli$(EXE)
 	$(INSTALLD) $(DESTDIR)/$(STEADPATH)
-	for d in stead2 stead3 stead3/ext; do \
+	for d in stead2 stead3 stead2/ext stead3/ext; do \
 		$(INSTALLD) $(DESTDIR)/$(STEADPATH)/$$d; \
 		$(INSTALL) instead/stead/$$d/*.lua $(DESTDIR)/$(STEADPATH)/$$d/; \
 	done
