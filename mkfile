@@ -1,10 +1,10 @@
 </$objtype/mkfile
 
 CC=pcc
-CFLAGS= -DVERSION="1.1" -D_POSIX_SOURCE -Ilua/src -DPLAN9 -DUNIX -DSTEAD_PATH="/sys/games/lib/instead/"
+CFLAGS= -DVERSION="1.2" -D_POSIX_SOURCE -Ilua/src -DPLAN9 -DUNIX -DSTEAD_PATH="/sys/games/lib/instead/"
 LIBS=lua/src/liblua.a
 
-all: $O.instead
+all: $O.instead-cli
 	
 $LIBS: lua
 	
@@ -34,10 +34,10 @@ OFILES=\
 %.$O: %.c
 	$CC $CFLAGS -c -o $target $stem.c
 
-$O.instead: $OFILES $LIBS
+$O.instead-cli: $OFILES $LIBS
 	$CC $CFLAGS -o $target $OFILES $LIBS
 
-install:V:
+install:V:all
 	mkdir -p /sys/games/lib/instead
 	dircp instead/stead /sys/games/lib/instead
 	cp tiny.lua /sys/games/lib/instead
@@ -47,7 +47,7 @@ install:V:
 	dircp metaparser/morph /sys/games/lib/instead/stead3/morph
 	mkdir -p /sys/games/lib/instead/stead3/parser
 	dircp metaparser/parser /sys/games/lib/instead/stead3/parser
-	cp $O.instead /$objtype/bin/instead
+	cp $O.instead-cli /$objtype/bin/instead-cli
 
 clean:V:
-	rm -f $OFILES $O.instead
+	rm -f $OFILES $O.instead-cli
