@@ -28,6 +28,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <locale.h>
+#include <sys/wait.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -40,6 +41,7 @@ static int opt_lua = 0;
 static int opt_debug = 0;
 static int opt_width = WIDTH;
 static char *opt_autoload = NULL;
+static const char *mmedia_bin = NULL;
 static int opt_autosave = 1;
 static int opt_mmedia = 0;
 static int need_restart = 0;
@@ -217,6 +219,23 @@ static char *media_fn[] = {
 	"instead.get_music"
 };
 
+static void mmedia_run(const char *f)
+{
+	pid_t pid;
+	int status;
+	if (!mmedia_bin || !mmedia_bin[0])
+		return;
+	pid = fork();
+	if (pid == -1)
+		return;
+	else if (pid > 0) {
+		waitpid(pid, &status, 0);
+	} else {
+		execl(mmedia_bin, mmedia_bin, f, NULL);
+		exit(1);
+	}
+}
+
 static void mmedia(int t)
 {
 	char *mm;
@@ -235,6 +254,7 @@ static void mmedia(int t)
 		media[t] = mm;
 		if (mm && *mm) { /* changed */
 			printf("@ %s\n", mm);
+			mmedia_run(mm);
 		}
 	}
 }
@@ -264,8 +284,9 @@ int main(int argc, const char **argv)
 			opt_autosave = 1;
 		} else if (!strcmp(argv[i], "-x")) {
 			opt_lua = 1;
-		} else if (!strcmp(argv[i], "-m")) {
+		} else if (!strncmp(argv[i], "-m", 2)) {
 			opt_mmedia = 1;
+			mmedia_bin = argv[i] + 2;
 		} else if (!strncmp(argv[i], "-d", 2)) {
 			opt_debug = 1;
 			reopen_stderr(argv[i] + 2);

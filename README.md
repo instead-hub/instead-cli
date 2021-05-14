@@ -63,7 +63,9 @@ Options:
 * -lfile - write all input commands to file;
 * -cpCODEPAGE - Win only (1251 by default), use 65001 for UTF-8;
 * -a - autosave on exit and autoload on start (autosave file);
-* -x - execute lua script.
+* -x - execute lua script;
+* -m - enable multimedia output;
+* -mcmd - enable run cmd on multimedia (for ex. -m/usr/bin/xdg-open).
 
 ## Links
 
