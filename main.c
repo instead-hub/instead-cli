@@ -41,7 +41,7 @@ static int opt_debug = 0;
 static int opt_width = WIDTH;
 static char *opt_autoload = NULL;
 static int opt_autosave = 1;
-
+static int opt_mmedia = 0;
 static int need_restart = 0;
 static int need_load = 0;
 static int need_save = 0;
@@ -220,6 +220,8 @@ static char *media_fn[] = {
 static void mmedia(int t)
 {
 	char *mm;
+	if (!opt_mmedia)
+		return;
 	instead_lock();
 	instead_function(media_fn[t], NULL);
 	mm = instead_retval(0);
@@ -262,6 +264,8 @@ int main(int argc, const char **argv)
 			opt_autosave = 1;
 		} else if (!strcmp(argv[i], "-x")) {
 			opt_lua = 1;
+		} else if (!strcmp(argv[i], "-m")) {
+			opt_mmedia = 1;
 		} else if (!strncmp(argv[i], "-d", 2)) {
 			opt_debug = 1;
 			reopen_stderr(argv[i] + 2);
