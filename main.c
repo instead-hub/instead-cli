@@ -239,7 +239,12 @@ static void mmedia_run(const char *f)
 		exit(1);
 	}
 #else
-// todo
+	static char cmd[512];
+	if (!mmedia_bin || !mmedia_bin[0])
+		return;
+	snprintf(cmd, sizeof(cmd), "%s %s", mmedia_bin, f);
+	/* not safe! but it is windows... */
+	system(cmd);
 #endif
 }
 
@@ -261,6 +266,8 @@ static void mmedia(int t)
 		media[t] = mm;
 		if (mm && *mm) { /* changed */
 			printf("@ %s\n", mm);
+			if (t == 0) /* we do not support composed images */
+				mm[strcspn(mm, ";")] = 0;
 			mmedia_run(mm);
 		}
 	}
