@@ -28,10 +28,13 @@
 #include <errno.h>
 #include <unistd.h>
 #include <locale.h>
-#include <sys/wait.h>
+
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <sys/wait.h>
 #endif
+
 #include "instead/src/instead/instead.h"
 #include "instead/src/instead/util.h"
 #define WIDTH 70
@@ -221,6 +224,7 @@ static char *media_fn[] = {
 
 static void mmedia_run(const char *f)
 {
+#ifndef _WIN32
 	pid_t pid;
 	int status;
 	if (!mmedia_bin || !mmedia_bin[0])
@@ -234,6 +238,9 @@ static void mmedia_run(const char *f)
 		execl(mmedia_bin, mmedia_bin, f, NULL);
 		exit(1);
 	}
+#else
+// todo
+#endif
 }
 
 static void mmedia(int t)
