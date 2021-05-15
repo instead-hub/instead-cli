@@ -383,10 +383,10 @@ restart:
 		int cmd_mode = 0;
 		printf("> "); fflush(stdout);
 		p = get_input();
-		if (!p)
+		if (!p || !strcmp(p, "/quit")) {
+			printf("\n");
 			break;
-		if (!strcmp(p, "/quit"))
-			break;
+		}
 		rc = 1; str = NULL;
 
 		if (*p == '/') {
