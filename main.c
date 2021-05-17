@@ -31,6 +31,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+extern char *dirname(char *);
 #else
 #include <sys/wait.h>
 #endif
@@ -79,8 +80,10 @@ static const luaL_Reg tiny_funcs[] = {
 static int tiny_init(void)
 {
 	int rc;
+	char path[PATH_MAX];
 	instead_api_register(tiny_funcs);
-	rc = instead_loadfile(STEAD_PATH"tiny.lua");
+	snprintf(path, sizeof(path), "%s/tiny.lua", instead_lua_path(NULL));
+	rc = instead_loadfile(path);
 	if (rc)
 		return rc;
 	return 0;
@@ -272,6 +275,7 @@ static void mmedia(int t)
 		}
 	}
 }
+
 int main(int argc, const char **argv)
 {
 	int rc, i;
@@ -283,6 +287,15 @@ int main(int argc, const char **argv)
 	int parser_mode = 0;
 	int menu_mode = 0;
 	int opt_args = 0;
+
+#ifdef _WIN32
+	char cwd[1024];
+	char base[PATH_MAX];
+	GetModuleFileNameA(NULL, cwd, 1024);
+	unix_path(cwd);
+	snprintf(base, sizeof(base), "%s/%s", dirname(cwd), STEAD_PATH);
+	instead_lua_path(base);
+#endif
 
 	setlocale(LC_ALL, "");
 	for (i = 1; i < argc; i++) {
