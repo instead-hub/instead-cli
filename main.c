@@ -259,8 +259,8 @@ static void mmedia(int t)
 	instead_lock();
 	instead_function(media_fn[t], NULL);
 	mm = instead_retval(0);
-        instead_clear();
-        instead_unlock();
+	instead_clear();
+	instead_unlock();
 	if (!mm && !media[t])
 		return;
 	if ((!media[t] && mm) || (media[t] && !mm) ||
