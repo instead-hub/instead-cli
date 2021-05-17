@@ -200,15 +200,18 @@ static void reopen_stdin(const char *fname)
 	}
 }
 
-static char *get_input(void)
+static char *get_input(const char *prompt)
 {
 	static char input[256];
 	char *p;
+	printf("\n%s", prompt); fflush(stdout);
 	input[0] = 0;
 	p = fgets(input, sizeof(input), stdin);
 	if (p && *p) {
 		p[strcspn(p, "\n\r")] = 0;
 	}
+	if (opt_echo && p)
+		printf("%s\n", p);
 	return p;
 }
 
@@ -380,8 +383,7 @@ restart:
 	mmedia(0); mmedia(1);
 	if (opt_autoload) {
 		snprintf(cmd, sizeof(cmd), "load %s", opt_autoload);
-		if (opt_echo)
-			printf("%s\n", cmd);
+		printf("/%s\n", cmd);
 		str = instead_cmd(cmd, &rc);
 	} else
 		str = instead_cmd("look", &rc);
@@ -398,14 +400,11 @@ restart:
 	while (1) {
 		char *p;
 		int cmd_mode = 0;
-		printf("> "); fflush(stdout);
-		p = get_input();
+		p = get_input("> ");
 		if (!p || !strcmp(p, "/quit")) {
 			printf("\n");
 			break;
 		}
-		if (opt_echo)
-			fprintf(stdout, "%s\n", p);
 		rc = 1; str = NULL;
 
 		if (*p == '/') {
@@ -457,19 +456,19 @@ restart:
 		}
 		if (need_save) {
 			puts("?(autosave)"); fflush(stdout);
-			p = get_input();
+			p = get_input("> ");
 			if (p && *p)
 				snprintf(cmd, sizeof(cmd), "save %s", p);
 			else
 				snprintf(cmd, sizeof(cmd), "save autosave");
-			printf("%s\n", cmd);
+			printf("/%s\n", cmd);
 			str = instead_cmd(cmd, NULL);
 			if (str)
 				free(str);
 			need_save = 0;
 		} else if (need_load) {
 			puts("?(autosave)"); fflush(stdout);
-			p = get_input();
+			p = get_input("> ");
 			if (opt_autoload)
 				free(opt_autoload);
 			if (p && *p)
