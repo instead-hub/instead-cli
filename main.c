@@ -81,7 +81,7 @@ static const luaL_Reg tiny_funcs[] = {
 static int tiny_init(void)
 {
 	int rc;
-	char path[PATH_MAX];
+	char path[1024];
 	instead_api_register(tiny_funcs);
 	snprintf(path, sizeof(path), "%s/tiny.lua", instead_lua_path(NULL));
 	rc = instead_loadfile(path);
