@@ -381,7 +381,7 @@ restart:
 		exit(1);
 	}
 	mmedia(0); mmedia(1);
-	if (opt_autoload) {
+	if (opt_autoload && !access(opt_autoload, R_OK)) {
 		snprintf(cmd, sizeof(cmd), "load %s", opt_autoload);
 		printf("/%s\n", cmd);
 		str = instead_cmd(cmd, &rc);
