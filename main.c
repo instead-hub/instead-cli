@@ -42,6 +42,7 @@ extern char *dirname(char *);
 
 static int opt_log = 0;
 static int opt_lua = 0;
+static int opt_echo = 0;
 static int opt_debug = 0;
 static int opt_width = WIDTH;
 static char *opt_autoload = NULL;
@@ -314,6 +315,8 @@ int main(int argc, const char **argv)
 		} else if (!strncmp(argv[i], "-m", 2)) {
 			opt_mmedia = 1;
 			mmedia_bin = argv[i] + 2;
+		} else if (!strcmp(argv[i], "-e")) {
+			opt_echo = 1;
 		} else if (!strncmp(argv[i], "-d", 2)) {
 			opt_debug = 1;
 			reopen_stderr(argv[i] + 2);
@@ -377,7 +380,8 @@ restart:
 	mmedia(0); mmedia(1);
 	if (opt_autoload) {
 		snprintf(cmd, sizeof(cmd), "load %s", opt_autoload);
-		printf("%s\n", cmd);
+		if (opt_echo)
+			printf("%s\n", cmd);
 		str = instead_cmd(cmd, &rc);
 	} else
 		str = instead_cmd("look", &rc);
@@ -400,6 +404,8 @@ restart:
 			printf("\n");
 			break;
 		}
+		if (opt_echo)
+			fprintf(stdout, "%s\n", p);
 		rc = 1; str = NULL;
 
 		if (*p == '/') {

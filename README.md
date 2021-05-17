@@ -64,6 +64,7 @@ Options:
 * -cpCODEPAGE - Win only (1251 by default), use 65001 for UTF-8;
 * -a - autosave on exit and autoload on start (autosave file);
 * -x - execute lua script;
+* -e - echo input command;
 * -m - enable multimedia output;
 * -mcmd - enable run cmd on multimedia. Examples: -m/usr/bin/xdg-open (Linux), -m/bin/plumb (Plan9), -m"start\"\"" (Windows).
 
