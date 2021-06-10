@@ -169,14 +169,18 @@ static char *trim(char *str)
 
 static void footer(void)
 {
-	char *p;
+	char *p; int way = 0;
 	p = instead_cmd("way", NULL);
 	if (p && *p) {
+		printf("\n");
+		way = 1;
 		printf(">> "); fmt(trim(p), opt_width);
 		free(p);
 	}
 	p = instead_cmd("inv", NULL);
 	if (p && *p) {
+		if (!way)
+			printf("\n");
 		printf("** "); fmt(trim(p), opt_width);
 		free(p);
 	}
