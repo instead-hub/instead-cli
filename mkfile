@@ -1,7 +1,7 @@
 </$objtype/mkfile
 
 CC=pcc
-CFLAGS= -DVERSION="1.3" -D_POSIX_SOURCE -Ilua/src -DPLAN9 -DUNIX -DSTEAD_PATH="/sys/games/lib/instead/"
+CFLAGS= -DVERSION="1.4" -D_POSIX_SOURCE -Ilua/src -DPLAN9 -DUNIX -DSTEAD_PATH="/sys/games/lib/instead/"
 LIBS=lua/src/liblua.a
 
 all: $O.instead-cli
