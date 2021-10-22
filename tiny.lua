@@ -36,10 +36,6 @@ if API == 'stead3' then
 			std.rawset(_G, 'instead', instead)
 			require "ext/sandbox"
 		end)
-		local mp = std.ref '@metaparser'
-		if mp then
-			mp.msg.CUTSCENE_MORE = '^'..mp.msg.CUTSCENE_HELP
-		end
 	end)
 else
 	require 'tiny2'
