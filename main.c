@@ -433,7 +433,7 @@ restart:
 		if (rc && !str && !menu_mode) { /* parser? */
 			snprintf(cmd, sizeof(cmd), "@metaparser \"%s\"", p);
 			str = instead_cmd(cmd, &rc);
-			if (!rc)
+			if (!rc && p[0])
 				parser_mode = 1;
 		}
 		if (rc) { /* try act */
