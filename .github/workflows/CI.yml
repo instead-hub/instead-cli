@@ -75,7 +75,7 @@ jobs:
 
       - name: Build windows binary
         run: |
-          make -f Makefile.mingw LUA_CFLAGS="-I./winlibs/ -L./winlibs/" VERSION=`date +%y%m%d`
+          make -f Makefile.mingw LUA_CFLAGS="" LUA_LFLAGS="" EXTRA_CFLAGS="-static -L./winlibs/ -I./winlibs/" EXTRA_LDFLAGS="-lluajit" LUA_LIBVERSION=`date +%y%m%d`
           make -f Makefile.mingw install
           make -f Makefile.mingw clean
 
