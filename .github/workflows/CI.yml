@@ -111,7 +111,7 @@ jobs:
           ls -alFR
           cd instead-cli
           chmod +x instead-cli/instead-cli
-          zip -r instead-cli.zip instead-cli/
+          zip -r ../instead-cli.zip instead-cli/
       - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
