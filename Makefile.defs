@@ -1,4 +1,4 @@
-VERSION := 1.6
+VERSION := $(shell date +%y%m%d)
 
 DESTDIR=./release/
 

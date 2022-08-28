@@ -1,3 +1,6 @@
+latest
+  * switched to rolling release model. Version is date.
+
 1.6
   * metaparser 2.3 included.
 

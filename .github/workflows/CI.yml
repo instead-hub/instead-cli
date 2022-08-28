@@ -84,9 +84,16 @@ jobs:
           make install
           make clean
 
+      - name: Create Artifact
+        run: |
+          mkdir -p artifact/instead-cli
+          cp -r release/* artifact/instead-cli
+          cp README.md artifact/instead-cli/
+          chmod +x artifact/instead-cli/instead-cli
+
       - name: Publish Artifact
         uses: actions/upload-artifact@v3
         with:
           name: instead-cli
-          path: release
+          path: artifact
           retention-days: 1
