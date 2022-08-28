@@ -15,6 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Cache libs
+        id: cache-libs
+        uses: actions/cache@v3
+        with:
+          path: |
+            libs
+            winlibs
+          key: ${{ runner.os }}-${{ env.luajit_ver }}-${{ env.iconv_ver }}
+
       - name: Install Packages
         run: |
           sudo apt-get update -qq
@@ -27,7 +36,8 @@ jobs:
           git submodule update
           mkdir libs winlibs
 
-      - name: luajit
+      - if: ${{ steps.cache-libs.outputs.cache-hit != 'true' }}
+        name: luajit
         run: |
           wget https://luajit.org/download/LuaJIT-${{ env.luajit_ver }}.tar.gz
           tar xf LuaJIT-${{ env.luajit_ver }}.tar.gz
@@ -44,7 +54,8 @@ jobs:
               cp src/$f ../libs/
           done
 
-      - name: libiconv
+      - if: ${{ steps.cache-libs.outputs.cache-hit != 'true' }}
+        name: libiconv
         run: |
             wget https://ftp.gnu.org/gnu/libiconv/libiconv-${{ env.iconv_ver }}.tar.gz
             tar xvf libiconv-${{ env.iconv_ver }}.tar.gz
