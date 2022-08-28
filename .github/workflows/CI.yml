@@ -34,11 +34,12 @@ jobs:
         run: |
           git submodule init
           git submodule update
-          mkdir libs winlibs
 
       - if: ${{ steps.cache-libs.outputs.cache-hit != 'true' }}
         name: luajit
         run: |
+          mkdir libs winlibs
+
           wget https://luajit.org/download/LuaJIT-${{ env.luajit_ver }}.tar.gz
           tar xf LuaJIT-${{ env.luajit_ver }}.tar.gz
           cd LuaJIT-${{ env.luajit_ver }}
