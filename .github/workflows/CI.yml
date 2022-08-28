@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
       - name: Install Packages
         run: |
           sudo apt-get update -qq
@@ -70,7 +69,6 @@ jobs:
 
       - name: Build linux binary
         run: |
-          make -f Makefile.mingw LUA_CFLAGS="-I./winlibs/ -L./winlibs/" VERSION=`date +%y%m%d`
           make EXTRA_CFLAGS="-static -L./libs/ -I./libs/" EXTRA_LDFLAGS="libs/libluajit.a libs/libiconv.a -ldl -lm" VERSION=`date +%y%m%d`
           make install
           make clean
