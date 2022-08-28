@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2021 Peter Kosyh <p.kosyh at gmail.com>
+ * Copyright 2009-2022 Peter Kosyh <p.kosyh at gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation files
@@ -341,7 +341,7 @@ int main(int argc, const char **argv)
 	SetConsoleCP(opt_codepage);
 #endif
 	if (!game) {
-		printf("instead-cli %s (by Peter Kosyh '2021)\n", VERSION);
+		printf("instead-cli %s (by Peter Kosyh '2021-2022)\n", VERSION);
 		fprintf(stdout, "Usage: %s [-d<file>] [-w<width>] [-i<script>] [-l<log>] [-a] <game>\n", argv[0]);
 		exit(1);
 	}
