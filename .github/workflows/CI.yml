@@ -110,7 +110,7 @@ jobs:
       - name: Create zip
         run: |
           ls -alFR
-          zip -r instead-cli.zip instead-cli/
+          zip -r instead-cli.zip instead-cli/instead-cli/
       - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
