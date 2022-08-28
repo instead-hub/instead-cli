@@ -90,7 +90,6 @@ jobs:
           mkdir -p artifact/instead-cli
           cp -r release/* artifact/instead-cli
           cp README.md artifact/instead-cli/
-          chmod +x artifact/instead-cli/instead-cli
 
       - name: Publish Artifact
         uses: actions/upload-artifact@v3
@@ -110,7 +109,9 @@ jobs:
       - name: Create zip
         run: |
           ls -alFR
-          zip -r instead-cli.zip instead-cli/instead-cli/
+          cd instead-cli
+          chmod +x instead-cli/instead-cli
+          zip -r instead-cli.zip instead-cli/
       - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
