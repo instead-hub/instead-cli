@@ -75,14 +75,12 @@ jobs:
 
       - name: Build windows binary
         run: |
-          make -f Makefile.mingw LUA_CFLAGS="" LUA_LFLAGS="" EXTRA_CFLAGS="-static -L./winlibs/ -I./winlibs/" EXTRA_LDFLAGS="-lluajit" LUA_LIBVERSION=`date +%y%m%d`
-          make -f Makefile.mingw install
+          make -f Makefile.mingw LUA_CFLAGS="" LUA_LFLAGS="" EXTRA_CFLAGS="-static -L./winlibs/ -I./winlibs/" EXTRA_LDFLAGS="-lluajit" LUA_LIBVERSION=`date +%y%m%d` install
           make -f Makefile.mingw clean
 
       - name: Build linux binary
         run: |
-          make EXTRA_CFLAGS="-static -L./libs/ -I./libs/" EXTRA_LDFLAGS="libs/libluajit.a libs/libiconv.a -ldl -lm" VERSION=`date +%y%m%d`
-          make install
+          make EXTRA_CFLAGS="-static -L./libs/ -I./libs/" EXTRA_LDFLAGS="libs/libluajit.a libs/libiconv.a -ldl -lm" VERSION=`date +%y%m%d` install
           make clean
 
       - name: Create Artifact
