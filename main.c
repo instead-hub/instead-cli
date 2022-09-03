@@ -127,7 +127,7 @@ static void fmt(const char *str, int width)
 		w ++;
 		if (c == ' ' || c == '\t' || c == '\n')
 			last = ptr;
-		if ((width > 0 && w >= width && last) || c == '\n') {
+		if ((width > 0 && w >= width && last && s < last) || c == '\n') {
 			while(s != last) {
 			#ifdef _WIN32
 				int n = utf_ff(s, last);
