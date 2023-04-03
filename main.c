@@ -384,13 +384,14 @@ restart:
 		fprintf(stdout, "Can not load game: %s\n", instead_err());
 		exit(1);
 	}
-	mmedia(0); mmedia(1);
 	if (opt_autoload && !access(opt_autoload, R_OK)) {
 		snprintf(cmd, sizeof(cmd), "load %s", opt_autoload);
 		printf("/%s\n", cmd);
 		str = instead_cmd(cmd, &rc);
 	} else
 		str = instead_cmd("look", &rc);
+	mmedia(0); mmedia(1);
+
 	show_err();
 	if (!rc && str) {
 		fmt(trim(str), opt_width);
