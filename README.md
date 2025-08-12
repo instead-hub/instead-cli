@@ -6,7 +6,7 @@ Trivial INSTEAD interpreter for developers.
 
 Dependencies: luajit (or lua), iconv.
 
-```
+```bash
 $ git clone https://github.com/instead-hub/instead-cli.git
 $ cd instead-cli
 $ git submodule init
@@ -21,7 +21,7 @@ System wide setup:
 
 Edit `Makefile.defs`.
 
-```
+```bash
 DESTDIR=/
 BIN=/usr/local/bin
 STEADPATH=/usr/local/share/instead-cli/
@@ -29,13 +29,13 @@ STEADPATH=/usr/local/share/instead-cli/
 
 Then:
 
-```
+```bash
 $ make && sudo make install
 ```
 
 ### 9front (Plan9) build
 
-```
+```bash
 % git/clone https://github.com/instead-hub/instead-cli.git
 % mk init
 % mk
