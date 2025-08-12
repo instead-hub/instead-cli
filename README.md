@@ -19,7 +19,7 @@ $ ./instead-cli
 
 System wide setup:
 
-Edit Makefile.defs.
+Edit `Makefile.defs`.
 
 ```
 DESTDIR=/
@@ -44,29 +44,31 @@ $ make && sudo make install
 
 ## Run
 
+```bash
 ./instead-cli <gamedir path>
+```
 
-To pass internal command to STEAD use '/' prefix. Some internal commands:
+To pass internal command to STEAD use `/` prefix. Some internal commands:
 
-* /save filename
-* /load filename
-* /quit
-* /inv
-* /look
+* `/save filename`
+* `/load filename`
+* `/quit`
+* `/inv`
+* `/look`
 
 Options:
 
-* -d - debug mode;
-* -dfile - debug mode + write stderr to file;
-* -wnum - line width is num symbols (70 by default);
-* -iscript - read script line by line and use it as commands;
-* -lfile - write all input commands to file;
-* -cpCODEPAGE - Win only (1251 by default), use 65001 for UTF-8;
-* -a - autosave on exit and autoload on start (autosave file);
-* -x - execute lua script;
-* -e - echo input command;
-* -m - enable multimedia output;
-* -mcmd - enable run cmd on multimedia. Examples: -m/usr/bin/xdg-open (Linux), -m/bin/plumb (Plan9), -m"start\"\"" (Windows).
+* `-d` - debug mode;
+* `-dfile` - debug mode + write stderr to file;
+* `-wnum` - line width is num symbols (70 by default);
+* `-iscript` - read script line by line and use it as commands;
+* `-lfile` - write all input commands to file;
+* `-cpCODEPAGE` - Win only (1251 by default), use 65001 for UTF-8;
+* `-a` - autosave on exit and autoload on start (autosave file);
+* `-x` - execute lua script;
+* `-e` - echo input command;
+* `-m` - enable multimedia output;
+* `-mcmd` - enable run cmd on multimedia. Examples: `-m/usr/bin/xdg-open` (Linux), `-m/bin/plumb` (Plan9), `-m"start\"\""` (Windows).
 
 ## Links
 
