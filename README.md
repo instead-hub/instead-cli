@@ -120,11 +120,11 @@ To pass internal command to STEAD use `/` prefix. Some internal commands:
   ```
 
 * `/way` (or just empty line) — return list of ways from current room
+* `/inv` (or just empty line) — return items in the inventory
+* `/look` — return the description of the current room
 * `/save filename`
 * `/load filename`
 * `/quit`
-* `/inv` (or just empty line) — return items in the inventory
-* `/look` — return the description of the current room
 
 Options:
 
