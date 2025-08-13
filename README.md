@@ -67,7 +67,7 @@ To pass internal command to STEAD use `/` prefix. Some internal commands:
   >
   ```
 
-* `/use 1,2` (or just `1,2`)
+* `/use 1,2` (or just `1,2`) — use item from inventory on another item of inventory or object in room
 
   ```bash
   $ instead-cli apple-game
