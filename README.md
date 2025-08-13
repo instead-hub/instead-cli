@@ -119,6 +119,7 @@ To pass internal command to STEAD use `/` prefix. Some internal commands:
   >> Kitchen(2)
   ```
 
+* `/way` (or just empty line) — return list of ways from current room
 * `/save filename`
 * `/load filename`
 * `/quit`
