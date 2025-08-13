@@ -123,7 +123,7 @@ To pass internal command to STEAD use `/` prefix. Some internal commands:
 * `/load filename`
 * `/quit`
 * `/inv` — return items in the inventory
-* `/look`
+* `/look` — return the description of the current room
 
 Options:
 
