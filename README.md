@@ -67,6 +67,28 @@ To pass internal command to STEAD use `/` prefix. Some internal commands:
   >
   ```
 
+* `/use 1,2` (or just `1,2`)
+
+  ```bash
+  $ instead-cli apple-game
+  Room
+
+  The apple(1) is lying on the floor. The table(2) stands in the
+  corner.
+
+  > 1
+  /I take the apple./
+
+  The table(1) stands in the corner.
+
+  ** Apple(2)
+
+  > 2,1
+  The table(1) stands in the corner. The apple(2) lies on the table.
+
+  >
+  ```
+
 * `/save filename`
 * `/load filename`
 * `/quit`
