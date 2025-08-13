@@ -122,7 +122,7 @@ To pass internal command to STEAD use `/` prefix. Some internal commands:
 * `/save filename`
 * `/load filename`
 * `/quit`
-* `/inv`
+* `/inv` — return items in the inventory
 * `/look`
 
 Options:
