@@ -2,7 +2,7 @@
 
 Trivial INSTEAD interpreter for developers.
 
-## Build and run
+## Build
 
 Dependencies: luajit (or lua), iconv.
 
