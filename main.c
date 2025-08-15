@@ -340,7 +340,7 @@ int main(int argc, const char **argv)
 	SetConsoleCP(opt_codepage);
 #endif
 	if (!game) {
-		printf("instead-cli %s (by Peter Kosyh '2021-2022)\n", VERSION);
+		printf("instead-cli %s (by Peter Kosyh '2021-2025)\n", VERSION);
 		fprintf(stdout, "Usage: %s [-d<file>] [-w<width>] [-i<script>] [-l<log>] [-a] <game>\n", argv[0]);
 		exit(1);
 	}
