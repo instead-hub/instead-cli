@@ -211,9 +211,8 @@ static char *get_input(const char *prompt)
 	printf("\n%s", prompt); fflush(stdout);
 	input[0] = 0;
 	p = fgets(input, sizeof(input), stdin);
-	if (p && *p) {
+	if (p)
 		p[strcspn(p, "\n\r")] = 0;
-	}
 	if (opt_echo && p)
 		printf("%s\n", p);
 	return p;
@@ -406,6 +405,8 @@ restart:
 		char *p;
 		int cmd_mode = 0;
 		p = get_input("> ");
+		if (p && *p != '/')
+			p = trim(p);
 		if (!p || !strcmp(p, "/quit")) {
 			printf("\n");
 			break;
@@ -439,7 +440,11 @@ restart:
 		}
 		if (rc) { /* try act */
 			free(str);
-			snprintf(cmd, sizeof(cmd), "act %s", p);
+			if (!*p) /* empty? */
+				cmd[0] = 0;
+			else
+				snprintf(cmd, sizeof(cmd), "act %s", p);
+
 			str = instead_cmd(cmd, &rc);
 		}
 		if (str) {
