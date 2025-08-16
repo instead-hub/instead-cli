@@ -211,9 +211,8 @@ static char *get_input(const char *prompt)
 	printf("\n%s", prompt); fflush(stdout);
 	input[0] = 0;
 	p = fgets(input, sizeof(input), stdin);
-	if (p && *p) {
+	if (p)
 		p[strcspn(p, "\n\r")] = 0;
-	}
 	if (opt_echo && p)
 		printf("%s\n", p);
 	return p;
@@ -341,7 +340,7 @@ int main(int argc, const char **argv)
 	SetConsoleCP(opt_codepage);
 #endif
 	if (!game) {
-		printf("instead-cli %s (by Peter Kosyh '2021-2022)\n", VERSION);
+		printf("instead-cli %s (by Peter Kosyh '2021-2025)\n", VERSION);
 		fprintf(stdout, "Usage: %s [-d<file>] [-w<width>] [-i<script>] [-l<log>] [-a] <game>\n", argv[0]);
 		exit(1);
 	}
@@ -406,6 +405,8 @@ restart:
 		char *p;
 		int cmd_mode = 0;
 		p = get_input("> ");
+		if (p && *p != '/')
+			p = trim(p);
 		if (!p || !strcmp(p, "/quit")) {
 			printf("\n");
 			break;
@@ -439,7 +440,11 @@ restart:
 		}
 		if (rc) { /* try act */
 			free(str);
-			snprintf(cmd, sizeof(cmd), "act %s", p);
+			if (!*p) /* empty? */
+				cmd[0] = 0;
+			else
+				snprintf(cmd, sizeof(cmd), "act %s", p);
+
 			str = instead_cmd(cmd, &rc);
 		}
 		if (str) {
