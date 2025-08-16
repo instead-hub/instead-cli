@@ -50,7 +50,7 @@ $ make && sudo make install
 
 To pass internal command to STEAD use `/` prefix. Some internal commands:
 
-* `/act 1` (or just `1`)
+* `/act 1` (or just `1`) — interact with object in room (if object has `tak` field, then activate it; if object has `act`, then activate it)
 
   ```bash
   $ instead-cli fantasy-game
