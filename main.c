@@ -410,6 +410,9 @@ restart:
 		if (!p || !strcmp(p, "/quit")) {
 			printf("\n");
 			break;
+		} else if (p && !strcmp(p, "/restart")) {
+			instead_done();
+			goto restart;
 		}
 		rc = 1; str = NULL;
 
