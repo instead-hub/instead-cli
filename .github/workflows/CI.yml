@@ -101,7 +101,7 @@ jobs:
       - name: Create zip
         run: |
           ls -alFR
-          cd instead-cli
+          cd artifact
           chmod +x instead-cli/instead-cli
           zip -r ../instead-cli.zip instead-cli/
 
