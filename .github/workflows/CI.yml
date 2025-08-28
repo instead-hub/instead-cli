@@ -98,20 +98,13 @@ jobs:
           path: artifact
           retention-days: 1
 
-  upload:
-    name: Create release and upload artifacts
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
       - name: Create zip
         run: |
           ls -alFR
           cd instead-cli
           chmod +x instead-cli/instead-cli
           zip -r ../instead-cli.zip instead-cli/
+
       - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
