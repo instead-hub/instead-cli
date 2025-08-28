@@ -41,9 +41,9 @@ jobs:
         run: |
           mkdir libs winlibs
 
-          wget https://luajit.org/download/LuaJIT-${{ env.luajit_ver }}.tar.gz
-          tar xf LuaJIT-${{ env.luajit_ver }}.tar.gz
-          cd LuaJIT-${{ env.luajit_ver }}
+          git clone https://luajit.org/git/luajit.git
+          cd luajit
+          git switch --detach tags/v${{ env.luajit_ver }}
           make CROSS=i686-w64-mingw32- HOST_CC="gcc -m32" TARGET_SYS=Windows BUILDMODE=static
           for f in lua.h luaconf.h lualib.h lauxlib.h; do
               cp src/$f ../winlibs/
@@ -92,7 +92,7 @@ jobs:
           strip artifact/instead-cli/instead-cli
 
       - name: Publish Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: instead-cli
           path: artifact
