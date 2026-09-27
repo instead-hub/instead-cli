@@ -1,3 +1,7 @@
+> [!WARNING]
+> The instead-cli project is now part of the [reinstead](https://github.com/instead-hub/reinstead) project.
+> This repo is archived!
+
 # instead-cli
 
 Trivial INSTEAD interpreter for developers.
